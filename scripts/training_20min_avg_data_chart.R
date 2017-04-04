@@ -1,3 +1,5 @@
+rm(list = ls())
+
 #change working directory
 setwd("/home/sean/R/kdd/scripts")
 
@@ -23,8 +25,7 @@ date_label = c(unique(substr(train_avg_time$time_window, 2, 11)))
 time_chart = array(NA,c(91,72,6),list(date_label,time_label,gate_id))
 
 #insert data
-for(i in 1:length(train_avg_time[,1]))
-{
+for (i in 1:length(train_avg_time[,1])) {
   date = substr(train_avg_time$time_window[i],2,11)
   time = substr(train_avg_time$time_window[i],13,17)
   gate = paste(train_avg_time$intersection_id[i],train_avg_time$tollgate_id[i],sep = "_")
@@ -36,23 +37,19 @@ weekday = c("MON","TUE","WED","THU","FRI","SAT","SUN")
 non_ruch_time = c(1:18,31:35,52:72)
 week_avg = array(NA,c(7,72,6),list(weekday,time_label,gate_id))
 
-for(gate in gate_id)
-{
-  for(time in time_label)#to build non-rush: non_ruch_time
-  {
+for (gate in gate_id) {
+  for (time in time_label) {#to build non-rush: non_ruch_time
     day = 2
     week_sum = numeric(7)
     week_num = numeric(7)
     
-    for(date in date_label)
-    {
-      if(!is.na(time_chart[date,time,gate]))
-      {
+    for (date in date_label) {
+      if (!is.na(time_chart[date,time,gate])) {
         week_num[day] = week_num[day] + 1
         week_sum[day] = week_sum[day] + time_chart[date,time,gate]
       }
       day = day + 1
-      if(day == 8) day = 1
+      if (day == 8) day = 1
     }
     week_avg[,time,gate] = week_sum/week_num
   }
@@ -62,8 +59,7 @@ for(gate in gate_id)
 A_2 = time_chart[,,"A_2"]
 aggr_A_2 = week_avg[,,"A_2"]
 max_day = numeric(72)
-for(i in 1:72)
-{
+for (i in 1:72) {
   max_day[i] = which.max(aggr_A_2[,i])
 }
 summary(factor(max_day))
