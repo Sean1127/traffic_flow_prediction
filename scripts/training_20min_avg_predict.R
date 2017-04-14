@@ -1,11 +1,54 @@
 rm(list = ls())
 
-#change working directory
-setwd("/home/sean/R/kdd/scripts")
+#build weather chart
+setwd("/home/sean/R/kdd/dataSets/training/")
+weather_file = read.csv("weather (table 7)_training_update.csv")
 
-#read input file
-train_avg_time = read.csv("time_old.csv")
-train_avg_volumn = read.csv("volumn_old.csv")
+weather_file$date = as.character(weather_file$date)
+weather = data.frame(matrix(NA,108*8,length(weather_file)))
+colnames(weather) = colnames(weather_file)
+
+date = c(unique(as.character(weather_file$date)))
+hour = c(0,3,6,9,12,15,18,21)
+
+#fill chart
+for (i in 1:length(date)) {
+  for (j in 1:length(hour)) {
+    index = intersect(which(weather_file$date %in% date[i]),
+                      which(weather_file$hour %in% hour[j]))
+    if (length(index) == 1) {
+      weather[(i - 1) * 8 + j,] = weather_file[index,]
+    } else {
+      weather$date[(i - 1) * 8 + j] = date[i]
+      weather$hour[(i - 1) * 8 + j] = hour[j]
+    }
+  }
+}
+
+#fill missing value
+for (i in 1:(length(weather[,1]) - 1)) {
+  j = i + 1
+  while (j <= length(weather[,1]) && is.na(weather$pressure[j])) {
+    j = j + 1
+  }
+  if ((i + 1) != j) {
+    for (k in (i + 1):(j - 1)) {
+      date_k = weather$date[k]
+      hour_k = weather$hour[k]
+      
+      weather[k,] = (as.numeric(weather[i,]) * (j - k) +
+                       as.numeric(weather[j,]) * (k - i))/(j - i)
+      
+      weather$date[k] = date_k
+      weather$hour[k] = hour_k
+    }
+  }
+}
+
+#build avg time chart
+setwd("/home/sean/R/kdd/scripts")
+train_avg_time = read.csv("training_20min_avg_travel_time.csv")
+train_avg_volumn = read.csv("training_20min_avg_volume.csv")
 
 #create chart
 gate_id = c("A_2","A_3","B_1","B_3","C_1","C_3")
@@ -32,51 +75,30 @@ for (i in 1:length(train_avg_time[,1])) {
   time_chart[date,time,gate] = train_avg_time$avg_travel_time[i]
 }
 
-#build non-rush hour
-weekday = c("MON","TUE","WED","THU","FRI","SAT","SUN")
-non_ruch_time = c(1:18,31:35,52:72)
-week_avg = array(NA,c(7,72,6),list(weekday,time_label,gate_id))
+#create big table
+big_table = data.frame(matrix(NA, 91*72*6, length(weather[1,]) + 6))
+gate_id = c("A_2","A_3","B_1","B_3","C_1")
+colnames(big_table) = c(colnames(weather), gate_id, "y")
+gate_id = c("A_2","A_3","B_1","B_3","C_1","C_3")
 
-for (gate in gate_id) {
-  for (time in time_label) {#to build non-rush: non_ruch_time
-    day = 2
-    week_sum = numeric(7)
-    week_num = numeric(7)
-    
-    for (date in date_label) {
-      if (!is.na(time_chart[date,time,gate])) {
-        week_num[day] = week_num[day] + 1
-        week_sum[day] = week_sum[day] + time_chart[date,time,gate]
-      }
-      day = day + 1
-      if (day == 8) day = 1
+#fill big table
+index = 1
+for (i in 1:length(date_label)) {
+  for (j in 1:length(time_label)) {
+    for (k in 1:length(gate_id)) {
+      big_table$date[index] = date_label[i]
+      big_table$hour[index] = time_label[j]
+      big_table[index,3:9] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:9]
+      big_table[index,10:14] = c(if(k == 1) 1 else 0,
+                                 if(k == 2) 1 else 0,
+                                 if(k == 3) 1 else 0,
+                                 if(k == 4) 1 else 0,
+                                 if(k == 5) 1 else 0)
+      big_table$y[index] = time_chart[i,j,gate_id[k]]
+      index = index + 1
     }
-    week_avg[,time,gate] = week_sum/week_num
   }
+  print(i)
 }
 
-#data interpret
-A_2 = time_chart[,,"A_2"]
-aggr_A_2 = week_avg[,,"A_2"]
-max_day = numeric(72)
-for (i in 1:72) {
-  max_day[i] = which.max(aggr_A_2[,i])
-}
-summary(factor(max_day))
-
-normal_1C <- A_2[setdiff(-c(seq(5,91,7),seq(6,91,7),59,60,77,78,79,80,81),c(-62,-82,-83)),]
-sun_normal_1C <- normal_1C[-c(11,13,15,16,29,41,42,44,50,51,52),]
-install.packages("mice")
-install.packages("randomForest")
-require(mice)
-require(randomForest)
-mice.sun_normal_1C <- mice(sun_normal_1C, m=3,maxit=50,method="rf", seed=278)
-cp_sun_normal1c <- complete(mice.sun_normal_1C,1)
-cp_sun_normal1c <-complete(mice.sun_normal_1C,2)
-cp_sun_normal1c <-complete(mice.sun_normal_1C,3)
-
-#A_3 = time_chart[,,"A_3"]
-#B_1 = time_chart[,,"B_1"]
-#B_3 = time_chart[,,"B_3"]
-#C_1 = time_chart[,,"C_1"]
-#C_3 = time_chart[,,"C_3"]
+write.csv(big_table, "training_big_table.csv")
