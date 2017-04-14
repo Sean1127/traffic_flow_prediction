@@ -64,6 +64,17 @@ for (i in 1:72) {
 }
 summary(factor(max_day))
 
+normal_1C <- A_2[setdiff(-c(seq(5,91,7),seq(6,91,7),59,60,77,78,79,80,81),c(-62,-82,-83)),]
+sun_normal_1C <- normal_1C[-c(11,13,15,16,29,41,42,44,50,51,52),]
+install.packages("mice")
+install.packages("randomForest")
+require(mice)
+require(randomForest)
+mice.sun_normal_1C <- mice(sun_normal_1C, m=3,maxit=50,method="rf", seed=278)
+cp_sun_normal1c <- complete(mice.sun_normal_1C,1)
+cp_sun_normal1c <-complete(mice.sun_normal_1C,2)
+cp_sun_normal1c <-complete(mice.sun_normal_1C,3)
+
 #A_3 = time_chart[,,"A_3"]
 #B_1 = time_chart[,,"B_1"]
 #B_3 = time_chart[,,"B_3"]
