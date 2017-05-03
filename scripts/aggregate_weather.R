@@ -5,7 +5,7 @@ setwd("/home/sean/R/kdd/dataSets/training/")
 weather_file = read.csv("weather (table 7)_training_update.csv")
 
 weather_file$date = as.character(weather_file$date)
-weather = data.frame(matrix(NA,108*8,length(weather_file)))
+weather = data.frame(matrix(NA,109*8,length(weather_file)))
 colnames(weather) = colnames(weather_file)
 
 date = c(unique(as.character(weather_file$date)))

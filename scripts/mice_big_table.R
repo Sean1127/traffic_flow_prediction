@@ -3,12 +3,12 @@ rm(list = ls())
 require(mice)
 
 setwd("/home/sean/R/kdd/scripts/")
-day_A2 = read.csv("20min_avg_time_A2.csv")
-day_A3 = read.csv("20min_avg_time_A3.csv")
-day_B1 = read.csv("20min_avg_time_B1.csv")
-day_B3 = read.csv("20min_avg_time_B3.csv")
-day_C1 = read.csv("20min_avg_time_C1.csv")
-day_C3 = read.csv("20min_avg_time_C3.csv")
+A2 = read.csv("20min_avg_time_A2.csv")
+A3 = read.csv("20min_avg_time_A3.csv")
+B1 = read.csv("20min_avg_time_B1.csv")
+B3 = read.csv("20min_avg_time_B3.csv")
+C1 = read.csv("20min_avg_time_C1.csv")
+C3 = read.csv("20min_avg_time_C3.csv")
 weather = read.csv("weather_aggr.csv")
 train_avg_time = read.csv("training_20min_avg_travel_time.csv")
 
@@ -31,18 +31,26 @@ index_weekend <- date_label[c(5,6,12,13,19,20,26,27,33,34,40,41,47,48,54,55,68,6
 weekday_chart = array(NA,c(length(index_weekday),72,6),list(index_weekday,time_label,gate_id))
 weekend_chart = array(NA,c(length(index_weekend),72,6),list(index_weekend,time_label,gate_id))
 
-day_A2[day_A2 == 0] = NA
-day_A3[day_A3 == 0] = NA
-day_B1[day_B1 == 0] = NA
-day_B3[day_B3 == 0] = NA
-day_C1[day_C1 == 0] = NA
-day_C3[day_C3 == 0] = NA
-day_A2 = day_A2[which(date_label %in% index_weekday),,]
-day_A3 = day_A3[which(date_label %in% index_weekday),,]
-day_B1 = day_B1[which(date_label %in% index_weekday),,]
-day_B3 = day_B3[which(date_label %in% index_weekday),,]
-day_C1 = day_C1[which(date_label %in% index_weekday),,]
-day_C3 = day_C3[which(date_label %in% index_weekday),,]
+A2[A2 == 0] = NA
+A3[A3 == 0] = NA
+B1[B1 == 0] = NA
+B3[B3 == 0] = NA
+C1[C1 == 0] = NA
+C3[C3 == 0] = NA
+
+day_A2 = A2[which(date_label %in% index_weekday),,]
+day_A3 = A3[which(date_label %in% index_weekday),,]
+day_B1 = B1[which(date_label %in% index_weekday),,]
+day_B3 = B3[which(date_label %in% index_weekday),,]
+day_C1 = C1[which(date_label %in% index_weekday),,]
+day_C3 = C3[which(date_label %in% index_weekday),,]
+
+end_A2 = A2[which(date_label %in% index_weekend),,]
+end_A3 = A3[which(date_label %in% index_weekend),,]
+end_B1 = B1[which(date_label %in% index_weekend),,]
+end_B3 = B3[which(date_label %in% index_weekend),,]
+end_C1 = C1[which(date_label %in% index_weekend),,]
+end_C3 = C3[which(date_label %in% index_weekend),,]
 
 A2_complete.data = matrix(rep(0,5184),nrow = 72)
 A3_complete.data = matrix(rep(0,5184),nrow = 72)
@@ -112,23 +120,26 @@ for (i in c(1:100))
 C3_complete.data <- C3_complete.data/100
 
 #create big table
-weekday_big_table = data.frame(matrix(NA, 61*72*6, length(weather[1,]) + 6))
-weekend_big_table = data.frame(matrix(NA, 20*72*6, length(weather[1,]) + 6))
+weekday_big_table = data.frame(matrix(NA, 61*24*6, length(weather[1,]) + 6))
+weekend_big_table = data.frame(matrix(NA, 20*24*6, length(weather[1,]) + 6))
 gate_id = c("A_2","A_3","B_1","B_3","C_1")
 colnames(weekday_big_table) = c(colnames(weather), gate_id, "y")
 colnames(weekend_big_table) = c(colnames(weather), gate_id, "y")
-gate_id = c("A_2","A_3","B_1","B_3","C_1","C_3")
 
-#fill big table
+gate_id = c("A_2","A_3","B_1","B_3","C_1","C_3")
+index_date = setdiff(c(1:91),setdiff(c(seq(5,91,7),seq(6,91,7),59,60,77,78,79,80,81),c(62,82,83)))
+index_time = c(19:30,46:57)
+
+#fill weekday big table
 index = 1
-for (i in 1:length(date_label)) {
-  for (j in 1:length(time_label)) {
+for (i in index_date) {
+  for (j in index_time) {
     for (k in 1:length(gate_id)) {
       weekday_big_table$date[index] = date_label[i]
       weekday_big_table$hour[index] = time_label[j]
-      weekday_big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:9]
+      weekday_big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:7]
       
-      weekday_big_table[index,10:14] = switch(k,
+      weekday_big_table[index,8:12] = switch(k,
                                       c(1,0,0,0,0),
                                       c(0,1,0,0,0),
                                       c(0,0,1,0,0),
@@ -148,5 +159,102 @@ for (i in 1:length(date_label)) {
   print(i)
 }
 
+A2_complete.data = matrix(rep(0,5184),nrow = 72)
+A3_complete.data = matrix(rep(0,5184),nrow = 72)
+B1_complete.data = matrix(rep(0,5184),nrow = 72)
+B3_complete.data = matrix(rep(0,5184),nrow = 72)
+C1_complete.data = matrix(rep(0,5184),nrow = 72)
+C3_complete.data = matrix(rep(0,5184),nrow = 72)
 
-#[which(date_label %in% index_weekend),,]
+m = matrix(rep(0,5184),nrow = 72)
+for(i in c(19:30))
+  m[,i] = matrix(1,72,1)
+for (i in c(46:57))
+  m[,i] = matrix(1,72,1)
+A2.data <- mice(end_A2,m = 100 ,predictorMatrix = m, printFlag = FALSE)
+for (i in c(1:100))
+  A2_complete.data <- A2_complete.data+complete(A2.data,i)
+A2_complete.data <- A2_complete.data/100
+
+m = matrix(rep(0,5184),nrow = 72)
+for(i in c(19:30))
+  m[,i] = matrix(1,72,1)
+for (i in c(46:57))
+  m[,i] = matrix(1,72,1)
+A3.data <- mice(end_A3,m = 100 ,predictorMatrix = m, printFlag = FALSE)
+for (i in c(1:100))
+  A3_complete.data <- A3_complete.data+complete(A3.data,i)
+A3_complete.data <- A3_complete.data/100
+
+m = matrix(rep(0,5184),nrow = 72)
+for(i in c(19:30))
+  m[,i] = matrix(1,72,1)
+for (i in c(46:57))
+  m[,i] = matrix(1,72,1)
+B1.data <- mice(end_B1,m = 100 ,predictorMatrix = m, printFlag = FALSE)
+for (i in c(1:100))
+  B1_complete.data <- B1_complete.data+complete(B1.data,i)
+B1_complete.data <- B1_complete.data/100
+
+m = matrix(rep(0,5184),nrow = 72)
+for(i in c(19:30))
+  m[,i] = matrix(1,72,1)
+for (i in c(46:57))
+  m[,i] = matrix(1,72,1)
+B3.data <- mice(end_B3,m = 100 ,predictorMatrix = m, printFlag = FALSE)
+for (i in c(1:100))
+  B3_complete.data <- B3_complete.data+complete(B3.data,i)
+B3_complete.data <- B3_complete.data/100
+
+m = matrix(rep(0,5184),nrow = 72)
+for(i in c(19:30))
+  m[,i] = matrix(1,72,1)
+for (i in c(46:57))
+  m[,i] = matrix(1,72,1)
+C1.data <- mice(end_C1,m = 100 ,predictorMatrix = m, printFlag = FALSE)
+for (i in c(1:100))
+  C1_complete.data <- C1_complete.data+complete(C1.data,i)
+C1_complete.data <- C1_complete.data/100
+
+m = matrix(rep(0,5184),nrow = 72)
+for(i in c(19:30))
+  m[,i] = matrix(1,72,1)
+for (i in c(46:57))
+  m[,i] = matrix(1,72,1)
+C3.data <- mice(end_C3,m = 100 ,predictorMatrix = m, printFlag = FALSE)
+for (i in c(1:100))
+  C3_complete.data <- C3_complete.data+complete(C3.data,i)
+C3_complete.data <- C3_complete.data/100
+
+#fill weekend big table
+index_date = c(5,6,12,13,19,20,26,27,33,34,40,41,47,48,54,55,68,69,89,90)
+index = 1
+for (i in index_date) {
+  for (j in index_time) {
+    for (k in 1:length(gate_id)) {
+      weekend_big_table$date[index] = date_label[i]
+      weekend_big_table$hour[index] = time_label[j]
+      weekend_big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:7]
+      
+      weekend_big_table[index,8:12] = switch(k,
+                                             c(1,0,0,0,0),
+                                             c(0,1,0,0,0),
+                                             c(0,0,1,0,0),
+                                             c(0,0,0,1,0),
+                                             c(0,0,0,0,1),
+                                             c(0,0,0,0,0))
+      weekend_big_table$y[index] = switch(k,
+                                          A2_complete.data[i,j],
+                                          A3_complete.data[i,j],
+                                          B1_complete.data[i,j],
+                                          B3_complete.data[i,j],
+                                          C1_complete.data[i,j],
+                                          C3_complete.data[i,j])
+      index = index + 1
+    }
+  }
+  print(i)
+}
+
+write.csv(weekday_big_table,"big_table_weekday.csv")
+write.csv(weekend_big_table,"big_table_weekend.csv")
