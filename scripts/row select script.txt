@@ -1,9 +1,0 @@
-index_normal <- row.names(chart)[setdiff(-c(seq(5,91,7),seq(6,91,7),59,60,77,78,79,80,81),c(-62,-82,-83))]
-index_holiday <- row.names(chart)[c(5,6,12,13,19,20,26,27,33,34,40,41,47,48,54,55,68,69,89,90)]
-big_table <- read.csv("C:/Users/USER/Documents/GitHub/traffic_flow_prediction/scripts/training_big_table.csv")
-big_table_normal_index <- sort(c(which(big_table$date %in% index_normal)))
-big_table_normal <- big_table[big_table_normal_index,]
-big_table_holiday_index <- sort(c(which(big_table$date %in% index_holiday)))
-big_table_holiday <- big_table[big_table_holiday_index,]
-write.csv(big_table_normal, file="normal.csv")
-write.csv(big_table_holiday, file="holiday.csv")

@@ -45,5 +45,11 @@ for (i in 1:(length(weather[,1]) - 1)) {
   }
 }
 
+# remove dependent column
+#cor(weather[3:9])
+weather$sea_pressure = NULL
+weather$temperature = NULL
+
 setwd("/home/sean/R/kdd/scripts/")
-write.csv(weather, "weather.csv",row.names = FALSE)
+write.csv(weather, "weather_aggr.csv",row.names = FALSE)
+

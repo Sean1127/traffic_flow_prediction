@@ -1,5 +1,6 @@
 setwd("/home/sean/R/kdd/scripts/")
 temp = read.csv("normal.csv")
+temp = big_table
 
 # new big table
 normal = data.frame(matrix(NA, length(temp[,1])/3, length(temp[1,]) - 2))
@@ -21,9 +22,9 @@ for (i in 1:length(temp[,1])){
 }
 
 # stepwise
-#fit <- lm(y~date+hour+pressure+sea_pressure+wind_direction+wind_speed+temperature+rel_humidity+precipitation+A_2+A_3+B_1+B_3+C_1,normal)
-#step <- step(fit, direction="both")
-#summary(step)
-#step$anova
+fit <- lm(y~date+hour+pressure+sea_pressure+wind_direction+wind_speed+temperature+rel_humidity+precipitation+A_2+A_3+B_1+B_3+C_1,big_table)
+step <- step(fit, direction="both")
+summary(step)
+step$anova
 
 #
