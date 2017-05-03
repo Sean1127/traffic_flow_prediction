@@ -2,7 +2,7 @@ rm(list = ls())
 
 require(mice)
 
-setwd("C://Users/USER/traffic_flow_prediction/scripts/")
+setwd("/home/sean/R/kdd/scripts/")
 day_A2 = read.csv("20min_avg_time_A2.csv")
 day_A3 = read.csv("20min_avg_time_A3.csv")
 day_B1 = read.csv("20min_avg_time_B1.csv")
@@ -32,11 +32,11 @@ weekday_chart = array(NA,c(length(index_weekday),72,6),list(index_weekday,time_l
 weekend_chart = array(NA,c(length(index_weekend),72,6),list(index_weekend,time_label,gate_id))
 
 day_A2[day_A2 == 0] = NA
-day_A3[day_A2 == 0] = NA
-day_B1[day_A2 == 0] = NA
-day_B3[day_A2 == 0] = NA
-day_C1[day_A2 == 0] = NA
-day_C3[day_A2 == 0] = NA
+day_A3[day_A3 == 0] = NA
+day_B1[day_B1 == 0] = NA
+day_B3[day_B3 == 0] = NA
+day_C1[day_C1 == 0] = NA
+day_C3[day_C3 == 0] = NA
 day_A2 = day_A2[which(date_label %in% index_weekday),,]
 day_A3 = day_A3[which(date_label %in% index_weekday),,]
 day_B1 = day_B1[which(date_label %in% index_weekday),,]
