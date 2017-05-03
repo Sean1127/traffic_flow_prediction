@@ -2,7 +2,7 @@ rm(list = ls())
 
 require(mice)
 
-setwd("/home/sean/R/kdd/scripts/")
+setwd("C://Users/USER/traffic_flow_prediction/scripts/")
 day_A2 = read.csv("20min_avg_time_A2.csv")
 day_A3 = read.csv("20min_avg_time_A3.csv")
 day_B1 = read.csv("20min_avg_time_B1.csv")
@@ -31,6 +31,12 @@ index_weekend <- date_label[c(5,6,12,13,19,20,26,27,33,34,40,41,47,48,54,55,68,6
 weekday_chart = array(NA,c(length(index_weekday),72,6),list(index_weekday,time_label,gate_id))
 weekend_chart = array(NA,c(length(index_weekend),72,6),list(index_weekend,time_label,gate_id))
 
+day_A2[day_A2 == 0] = NA
+day_A3[day_A2 == 0] = NA
+day_B1[day_A2 == 0] = NA
+day_B3[day_A2 == 0] = NA
+day_C1[day_A2 == 0] = NA
+day_C3[day_A2 == 0] = NA
 day_A2 = day_A2[which(date_label %in% index_weekday),,]
 day_A3 = day_A3[which(date_label %in% index_weekday),,]
 day_B1 = day_B1[which(date_label %in% index_weekday),,]
@@ -118,18 +124,18 @@ index = 1
 for (i in 1:length(date_label)) {
   for (j in 1:length(time_label)) {
     for (k in 1:length(gate_id)) {
-      big_table$date[index] = date_label[i]
-      big_table$hour[index] = time_label[j]
-      big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:9]
+      weekday_big_table$date[index] = date_label[i]
+      weekday_big_table$hour[index] = time_label[j]
+      weekday_big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:9]
       
-      big_table[index,10:14] = switch(k,
+      weekday_big_table[index,10:14] = switch(k,
                                       c(1,0,0,0,0),
                                       c(0,1,0,0,0),
                                       c(0,0,1,0,0),
                                       c(0,0,0,1,0),
                                       c(0,0,0,0,1),
                                       c(0,0,0,0,0))
-      big_table$y[index] = switch(k,
+      weekday_big_table$y[index] = switch(k,
                                   A2_complete.data[i,j],
                                   A3_complete.data[i,j],
                                   B1_complete.data[i,j],
@@ -141,8 +147,6 @@ for (i in 1:length(date_label)) {
   }
   print(i)
 }
-
-write.csv(big_table, "big_table.csv",col.names = FALSE)
 
 
 #[which(date_label %in% index_weekend),,]

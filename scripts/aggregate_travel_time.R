@@ -4,7 +4,7 @@ require(stringr)
 require(dplyr)
 require(tidyr)
 
-setwd("/home/sean/R/kdd/dataSets/training/")
+setwd("C://Users/USER/traffic_flow_prediction/dataSets/training/")
 trajectories <- read.csv("trajectories(table 5)_training.csv")
 
 chartB1 <- matrix(NA, ncol = 72, nrow = 91)
@@ -27,7 +27,7 @@ colnames(chartC3) <- c("00:00","00:20", "00:40", "01:00","01:20", "01:40", "02:0
 colnames(chartA2) <- c("00:00","00:20", "00:40", "01:00","01:20", "01:40", "02:00","02:20", "02:40", "03:00","03:20", "03:40", "04:00","04:20", "04:40", "05:00","05:20", "05:40", "06:00","06:20", "06:40", "07:00","07:20", "07:40", "08:00","08:20", "08:40", "09:00","09:20", "09:40", "10:00","10:20", "10:40", "11:00","11:20", "11:40", "12:00","12:20", "12:40", "13:00","13:20", "13:40", "14:00","14:20", "14:40", "15:00","15:20", "15:40", "16:00","16:20", "16:40", "17:00","17:20", "17:40", "18:00","18:20", "18:40", "19:00","19:20", "19:40", "20:00","20:20", "20:40", "21:00","21:20", "21:40", "22:00","22:20", "22:40", "23:00","23:20", "23:40")
 colnames(chartA3) <- c("00:00","00:20", "00:40", "01:00","01:20", "01:40", "02:00","02:20", "02:40", "03:00","03:20", "03:40", "04:00","04:20", "04:40", "05:00","05:20", "05:40", "06:00","06:20", "06:40", "07:00","07:20", "07:40", "08:00","08:20", "08:40", "09:00","09:20", "09:40", "10:00","10:20", "10:40", "11:00","11:20", "11:40", "12:00","12:20", "12:40", "13:00","13:20", "13:40", "14:00","14:20", "14:40", "15:00","15:20", "15:40", "16:00","16:20", "16:40", "17:00","17:20", "17:40", "18:00","18:20", "18:40", "19:00","19:20", "19:40", "20:00","20:20", "20:40", "21:00","21:20", "21:40", "22:00","22:20", "22:40", "23:00","23:20", "23:40")
 
-setwd("/home/sean/R/kdd/scripts/")
+setwd("C://Users/USER/traffic_flow_prediction/scripts/")
 data1 <- read.csv("training_20min_avg_travel_time.csv")
 data1c <- data1[21855:25144,]
 grabstr<- (substr(data1c$time_window, 2, 11))
@@ -106,7 +106,7 @@ for(i in 1:91){
   }
 }
 
-write.csv(mat_mean,"20min_avg_time_B1.csv")
+write.csv(row.names = FALSE,mat_mean,"20min_avg_time_B1.csv")
 
 sep_date <- str_split(string=lapply(str_split(trajectories[trajectories$intersection_id=="B"&trajectories$tollgate_id==3,]$starting_time," "),'[',1),pattern="-")
 sep_date <- data.frame(Reduce(rbind, sep_date))
@@ -176,7 +176,7 @@ for(i in 1:91){
   }
 }
 
-write.csv(mat_mean,"20min_avg_time_B3.csv")
+write.csv(row.names = FALSE,mat_mean,"20min_avg_time_B3.csv")
 
 sep_date <- str_split(string=lapply(str_split(trajectories[trajectories$intersection_id=="A"&trajectories$tollgate_id==2,]$starting_time," "),'[',1),pattern="-")
 sep_date <- data.frame(Reduce(rbind, sep_date))
@@ -246,7 +246,7 @@ for(i in 1:91){
   }
 }
 
-write.csv(mat_mean,"20min_avg_time_A2.csv")
+write.csv(row.names = FALSE,mat_mean,"20min_avg_time_A2.csv")
 
 sep_date <- str_split(string=lapply(str_split(trajectories[trajectories$intersection_id=="A"&trajectories$tollgate_id==3,]$starting_time," "),'[',1),pattern="-")
 sep_date <- data.frame(Reduce(rbind, sep_date))
@@ -316,7 +316,7 @@ for(i in 1:91){
   }
 }
 
-write.csv(mat_mean,"20min_avg_time_A3.csv")
+write.csv(row.names = FALSE,mat_mean,"20min_avg_time_A3.csv")
 
 sep_date <- str_split(string=lapply(str_split(trajectories[trajectories$intersection_id=="C"&trajectories$tollgate_id==1,]$starting_time," "),'[',1),pattern="-")
 sep_date <- data.frame(Reduce(rbind, sep_date))
@@ -386,7 +386,7 @@ for(i in 1:91){
   }
 }
 
-write.csv(mat_mean,"20min_avg_time_C1.csv")
+write.csv(row.names = FALSE,mat_mean,"20min_avg_time_C1.csv")
 
 sep_date <- str_split(string=lapply(str_split(trajectories[trajectories$intersection_id=="C"&trajectories$tollgate_id==3,]$starting_time," "),'[',1),pattern="-")
 sep_date <- data.frame(Reduce(rbind, sep_date))
@@ -456,5 +456,5 @@ for(i in 1:91){
   }
 }
 
-write.csv(mat_mean,"20min_avg_time_C3.csv")
+write.csv(row.names = FALSE,mat_mean,"20min_avg_time_C3.csv")
 
