@@ -9,7 +9,7 @@ B1 = read.csv("20min_avg_time_B1.csv")
 B3 = read.csv("20min_avg_time_B3.csv")
 C1 = read.csv("20min_avg_time_C1.csv")
 C3 = read.csv("20min_avg_time_C3.csv")
-weather = read.csv("weather_aggr.csv")
+weather = read.csv("aggregate_weather.csv")
 train_avg_time = read.csv("training_20min_avg_travel_time.csv")
 
 date_label = c(unique(substr(train_avg_time$time_window, 2, 11)))
@@ -118,6 +118,19 @@ C3.data <- mice(day_C3,m = 100 ,predictorMatrix = m, printFlag = FALSE)
 for (i in c(1:100))
   C3_complete.data <- C3_complete.data+complete(C3.data,i)
 C3_complete.data <- C3_complete.data/100
+
+for (i in 1:length(C3_complete.data[,1])) {
+  if (is.na(C3_complete.data[i,19]) && is.na(C3_complete.data[i,20])) {
+    C3_complete.data[i,19] = (C3_complete.data[i,18]*2 + C3_complete.data[i,21])/3
+    C3_complete.data[i,20] = (C3_complete.data[i,18] + C3_complete.data[i,21]*2)/3
+  }
+  if (is.na(C3_complete.data[i,19])) {
+    C3_complete.data[i,19] = (C3_complete.data[i,18] + C3_complete.data[i,20])/2
+  }
+  if (is.na(C3_complete.data[i,20])) {
+    C3_complete.data[i,20] = (C3_complete.data[i,19] + C3_complete.data[i,21])/2
+  }
+}
 
 #create big table
 weekday_big_table = data.frame(matrix(NA, 61*24*6, length(weather[1,]) + 6))
