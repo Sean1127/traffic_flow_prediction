@@ -2,7 +2,7 @@ rm(list = ls())
 
 require(mice)
 
-setwd("/home/sean/R/kdd/scripts/")
+setwd("/home/sean/kdd/scripts/")
 A2 = read.csv("20min_avg_time_A2.csv")
 A3 = read.csv("20min_avg_time_A3.csv")
 B1 = read.csv("20min_avg_time_B1.csv")
@@ -172,14 +172,14 @@ for (i in index_date) {
   print(i)
 }
 
-A2_complete.data = matrix(rep(0,5184),nrow = 72)
-A3_complete.data = matrix(rep(0,5184),nrow = 72)
-B1_complete.data = matrix(rep(0,5184),nrow = 72)
-B3_complete.data = matrix(rep(0,5184),nrow = 72)
-C1_complete.data = matrix(rep(0,5184),nrow = 72)
-C3_complete.data = matrix(rep(0,5184),nrow = 72)
+A2_complete.data = matrix(rep(0,1440),nrow = 72)
+A3_complete.data = matrix(rep(0,1440),nrow = 72)
+B1_complete.data = matrix(rep(0,1440),nrow = 72)
+B3_complete.data = matrix(rep(0,1440),nrow = 72)
+C1_complete.data = matrix(rep(0,1440),nrow = 72)
+C3_complete.data = matrix(rep(0,1440),nrow = 72)
 
-m = matrix(rep(0,5184),nrow = 72)
+m = matrix(rep(0,1440),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
 for (i in c(46:57))
@@ -189,7 +189,7 @@ for (i in c(1:100))
   A2_complete.data <- A2_complete.data+complete(A2.data,i)
 A2_complete.data <- A2_complete.data/100
 
-m = matrix(rep(0,5184),nrow = 72)
+m = matrix(rep(0,1440),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
 for (i in c(46:57))
@@ -199,7 +199,7 @@ for (i in c(1:100))
   A3_complete.data <- A3_complete.data+complete(A3.data,i)
 A3_complete.data <- A3_complete.data/100
 
-m = matrix(rep(0,5184),nrow = 72)
+m = matrix(rep(0,1440),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
 for (i in c(46:57))
@@ -209,7 +209,7 @@ for (i in c(1:100))
   B1_complete.data <- B1_complete.data+complete(B1.data,i)
 B1_complete.data <- B1_complete.data/100
 
-m = matrix(rep(0,5184),nrow = 72)
+m = matrix(rep(0,1440),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
 for (i in c(46:57))
@@ -219,7 +219,7 @@ for (i in c(1:100))
   B3_complete.data <- B3_complete.data+complete(B3.data,i)
 B3_complete.data <- B3_complete.data/100
 
-m = matrix(rep(0,5184),nrow = 72)
+m = matrix(rep(0,1440),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
 for (i in c(46:57))
@@ -229,7 +229,7 @@ for (i in c(1:100))
   C1_complete.data <- C1_complete.data+complete(C1.data,i)
 C1_complete.data <- C1_complete.data/100
 
-m = matrix(rep(0,5184),nrow = 72)
+m = matrix(rep(0,1440),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
 for (i in c(46:57))
