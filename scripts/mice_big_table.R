@@ -216,6 +216,10 @@ for (i in c(1:100))
   B1_complete.data <- B1_complete.data+complete(B1.data,i)
 B1_complete.data <- B1_complete.data/100
 
+if (is.na(B1_complete.data[i,20])) {
+  B1_complete.data[i,20] = (B1_complete.data[i,19] + B1_complete.data[i,21])/2
+}
+
 m = matrix(rep(0,5184),nrow = 72)
 for(i in c(19:30))
   m[,i] = matrix(1,72,1)
@@ -245,8 +249,6 @@ C3.data <- mice(end_C3,m = 100 ,predictorMatrix = m, printFlag = FALSE)
 for (i in c(1:100))
   C3_complete.data <- C3_complete.data+complete(C3.data,i)
 C3_complete.data <- C3_complete.data/100
-
-for (i in 1:length(C1))
 
 #fill weekend big table
 index_date = c(5,6,12,13,19,20,26,27,33,34,40,41,47,48,54,55,68,69,89,90)
