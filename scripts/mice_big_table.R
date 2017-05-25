@@ -2,7 +2,7 @@ rm(list = ls())
 
 require(mice)
 
-setwd("/Users/USER/traffic_flow_prediction/scripts/")
+setwd("kdd/scripts/")
 A2 = read.csv("20min_avg_time_A2.csv")
 A3 = read.csv("20min_avg_time_A3.csv")
 B1 = read.csv("20min_avg_time_B1.csv")
@@ -132,6 +132,13 @@ for (i in 1:length(C3_complete.data[,1])) {
   }
 }
 
+write.csv(A2_complete.data, "day_A2.csv")
+write.csv(A3_complete.data, "day_A3.csv")
+write.csv(B1_complete.data, "day_B1.csv")
+write.csv(B3_complete.data, "day_B3.csv")
+write.csv(C1_complete.data, "day_C1.csv")
+write.csv(C3_complete.data, "day_C3.csv")
+
 #create big table
 weekday_big_table = data.frame(matrix(NA, 61*24*6, length(weather[1,]) + 6))
 weekend_big_table = data.frame(matrix(NA, 20*24*6, length(weather[1,]) + 6))
@@ -145,12 +152,12 @@ index_time = c(19:30,46:57)
 
 #fill weekday big table
 index = 1
-for (i in index_date) {
+for (i in 1:length(index_date)) {
   for (j in index_time) {
     for (k in 1:length(gate_id)) {
-      weekday_big_table$date[index] = date_label[i]
+      weekday_big_table$date[index] = date_label[index_date[i]]
       weekday_big_table$hour[index] = time_label[j]
-      weekday_big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:7]
+      weekday_big_table[index,3:7] = weather[(index_date[i] + 17)*8 + trunc((j - 1)/9) + 1,3:7]
       
       weekday_big_table[index,8:12] = switch(k,
                                       c(1,0,0,0,0),
@@ -160,12 +167,12 @@ for (i in index_date) {
                                       c(0,0,0,0,1),
                                       c(0,0,0,0,0))
       weekday_big_table$y[index] = switch(k,
-                                  A2_complete.data[i,j],
-                                  A3_complete.data[i,j],
-                                  B1_complete.data[i,j],
-                                  B3_complete.data[i,j],
-                                  C1_complete.data[i,j],
-                                  C3_complete.data[i,j])
+                                  A2_complete.data[index_date[i],j],
+                                  A3_complete.data[index_date[i],j],
+                                  B1_complete.data[index_date[i],j],
+                                  B3_complete.data[index_date[i],j],
+                                  C1_complete.data[index_date[i],j],
+                                  C3_complete.data[index_date[i],j])
       index = index + 1
     }
   }
@@ -239,15 +246,17 @@ for (i in c(1:100))
   C3_complete.data <- C3_complete.data+complete(C3.data,i)
 C3_complete.data <- C3_complete.data/100
 
+for (i in 1:length(C1))
+
 #fill weekend big table
 index_date = c(5,6,12,13,19,20,26,27,33,34,40,41,47,48,54,55,68,69,89,90)
 index = 1
-for (i in index_date) {
+for (i in 1:length(index_date)) {
   for (j in index_time) {
     for (k in 1:length(gate_id)) {
-      weekend_big_table$date[index] = date_label[i]
+      weekend_big_table$date[index] = date_label[index_date[i]]
       weekend_big_table$hour[index] = time_label[j]
-      weekend_big_table[index,3:7] = weather[(i + 17)*8 + trunc((j - 1)/9) + 1,3:7]
+      weekend_big_table[index,3:7] = weather[(index_date[i] + 17)*8 + trunc((j - 1)/9) + 1,3:7]
       
       weekend_big_table[index,8:12] = switch(k,
                                              c(1,0,0,0,0),
@@ -257,12 +266,12 @@ for (i in index_date) {
                                              c(0,0,0,0,1),
                                              c(0,0,0,0,0))
       weekend_big_table$y[index] = switch(k,
-                                          A2_complete.data[i,j],
-                                          A3_complete.data[i,j],
-                                          B1_complete.data[i,j],
-                                          B3_complete.data[i,j],
-                                          C1_complete.data[i,j],
-                                          C3_complete.data[i,j])
+                                          A2_complete.data[index_date[i],j],
+                                          A3_complete.data[index_date[i],j],
+                                          B1_complete.data[index_date[i],j],
+                                          B3_complete.data[index_date[i],j],
+                                          C1_complete.data[index_date[i],j],
+                                          C3_complete.data[index_date[i],j])
       index = index + 1
     }
   }
